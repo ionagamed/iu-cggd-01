@@ -1,19 +1,19 @@
-#include "depth_buffer.h"
+#include "depth_buffer_color.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 #include <iostream>
 
-cg::ZCulling::ZCulling(unsigned short width, unsigned short height,
+cg::ZCullingColor::ZCullingColor(unsigned short width, unsigned short height,
                        std::string obj_file)
     : TriangleRasterization(width, height, obj_file) {
   depth_buffer = std::vector<float>(static_cast<size_t>(width * height), 1);
 }
 
-cg::ZCulling::~ZCulling() {}
+cg::ZCullingColor::~ZCullingColor() {}
 
-void cg::ZCulling::DrawScene() {
+void cg::ZCullingColor::DrawScene() {
   unsigned id = 0;
   for (auto face : parser->GetFaces()) {
     face.primitive_id = id++;
@@ -22,12 +22,12 @@ void cg::ZCulling::DrawScene() {
   }
 }
 
-void cg::ZCulling::Clear() {
+void cg::ZCullingColor::Clear() {
   frame_buffer = std::vector<color>(static_cast<size_t>(width * height));
   depth_buffer = std::vector<float>(static_cast<size_t>(width * height), 1e9);
 }
 
-void cg::ZCulling::DrawTriangle(face triangle) {
+void cg::ZCullingColor::DrawTriangle(face triangle) {
   auto bbox = GetBoundingBox(triangle);
 
   bool ccw = false;
@@ -50,7 +50,7 @@ void cg::ZCulling::DrawTriangle(face triangle) {
         float z = bary[0] * triangle.vertices[0].z +
                   bary[1] * triangle.vertices[1].z +
                   bary[2] * triangle.vertices[2].z;
-        auto ps_out = PixelShader(point, bary, triangle.primitive_id);
+        auto ps_out = PixelShader(point, bary, triangle.primitive_id, z);
         SetPixel(round(x), round(y), ps_out, z);
       }
     }
@@ -68,11 +68,15 @@ void cg::ZCulling::DrawTriangle(face triangle) {
   //          cg::color(255, 0, 0));
 }
 
-bool cg::ZCulling::DepthTest(unsigned x, unsigned y, float z) {
+cg::color cg::ZCullingColor::PixelShader(float2 coord, float3 bary, unsigned primitive_id, float z) {
+  return color((1 - z) * 255, (1 - z) * 255, (1 - z) * 255);
+}
+
+bool cg::ZCullingColor::DepthTest(unsigned x, unsigned y, float z) {
   return z < depth_buffer[y * width + x];
 }
 
-void cg::ZCulling::SetPixel(unsigned short x, unsigned short y, color color,
+void cg::ZCullingColor::SetPixel(unsigned short x, unsigned short y, color color,
                             float z) {
   if (DepthTest(x, y, z)) {
     frame_buffer[y * width + x] = color;

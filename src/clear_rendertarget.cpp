@@ -2,34 +2,34 @@
 
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 #include <stdexcept>
 
+#include "stb_image_write.h"
 
-cg::ClearRenderTarget::ClearRenderTarget(unsigned short width, unsigned short height):
-    width(width),
-    height(height)
-{
-    throw std::runtime_error("Not implemented yet");
+cg::ClearRenderTarget::ClearRenderTarget(unsigned long width,
+                                         unsigned long height)
+    : width(width), height(height) {
+  frame_buffer.reserve(static_cast<size_t>(width * height));
 }
 
-cg::ClearRenderTarget::~ClearRenderTarget()
-{
-    throw std::runtime_error("Not implemented yet");
+cg::ClearRenderTarget::~ClearRenderTarget() {
+  // frame_buffer.clear();
 }
 
-void cg::ClearRenderTarget::Clear()
-{
-    throw std::runtime_error("Not implemented yet");
+void cg::ClearRenderTarget::Clear() {
+  frame_buffer.clear();
 }
 
-void cg::ClearRenderTarget::Save(std::string filename) const
-{
-    throw std::runtime_error("Not implemented yet");
+void cg::ClearRenderTarget::Save(std::string filename) const {
+  int result = stbi_write_png(filename.c_str(), width, height, 3,
+                              frame_buffer.data(), width * sizeof(color));
+
+  if (result != 1) {
+    throw std::runtime_error("Cannot write PNG: stbi_write_png");
+  }
 }
 
-void cg::ClearRenderTarget::SetPixel(unsigned short x, unsigned short y, color color)
-{
-    throw std::runtime_error("Not implemented yet");
+void cg::ClearRenderTarget::SetPixel(unsigned long x, unsigned long y,
+                                     color color) {
+  frame_buffer[y * width + x] = color;
 }

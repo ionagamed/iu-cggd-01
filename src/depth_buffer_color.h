@@ -6,16 +6,17 @@ using namespace linalg::ostream_overloads;
 
 namespace cg {
 
-class ZCulling : public TriangleRasterization {
+class ZCullingColor : public TriangleRasterization {
  public:
-  ZCulling(unsigned short width, unsigned short height, std::string obj_file);
-  virtual ~ZCulling();
+  ZCullingColor(unsigned short width, unsigned short height, std::string obj_file);
+  virtual ~ZCullingColor();
 
   void DrawScene();
   void Clear();
 
  protected:
   virtual void DrawTriangle(face triangle);
+  virtual color PixelShader(float2 coord, float3 bary, unsigned primitive_id, float z);
   bool DepthTest(unsigned x, unsigned y, float z);
   void SetPixel(unsigned short x, unsigned short y, color color, float z);
   std::vector<float> depth_buffer;

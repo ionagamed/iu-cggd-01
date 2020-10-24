@@ -3,49 +3,41 @@
 #include <string>
 #include <vector>
 
-namespace cg
-{
+namespace cg {
 
-	struct color
-	{
-		unsigned char r;
-		unsigned char g;
-		unsigned char b;
+struct color {
+  unsigned char r;
+  unsigned char g;
+  unsigned char b;
 
-		color()
-		{
-			r = 0;
-			g = 0;
-			b = 0;
-		}
+  color() {
+    r = 0;
+    g = 0;
+    b = 0;
+  }
 
-		color(unsigned char in_r, unsigned char in_g, unsigned char in_b)
-		{
-			r = in_r;
-			g = in_g;
-			b = in_b;
-		}
-	};
+  color(unsigned char in_r, unsigned char in_g, unsigned char in_b) {
+    r = in_r;
+    g = in_g;
+    b = in_b;
+  }
+};
 
+class ClearRenderTarget {
+ public:
+  ClearRenderTarget(unsigned long width, unsigned long height);
+  virtual ~ClearRenderTarget();
 
-	class ClearRenderTarget
-	{
-	public:
-		ClearRenderTarget(unsigned short width, unsigned short height);
-		virtual ~ClearRenderTarget();
+  void Clear();
+  void Save(std::string filename) const;
 
-		void Clear();
-		void Save(std::string filename) const;
+ protected:
+  void SetPixel(unsigned long x, unsigned long y, color color);
 
-	protected:
-		void SetPixel(unsigned short x, unsigned short y, color color);
+  unsigned long height;
+  unsigned long width;
 
-		unsigned short height;
-		unsigned short width;
+  std::vector<color> frame_buffer;
+};
 
-		std::vector<color> frame_buffer;
-	};
-
-
-}
-
+}  // namespace cg

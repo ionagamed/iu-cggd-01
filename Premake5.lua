@@ -27,7 +27,7 @@ project "01. Clear render target"
       files { "src/clear_rendertarget.h", "src/clear_rendertarget.cpp" }
       files { "src/clear_rendertarget_main.cpp" }
 
---[[
+
 project "02. Draw line"
    kind "ConsoleApp"
       includedirs { "src/" }
@@ -75,4 +75,17 @@ project "05. Depth buffer"
       files { "src/triangle_rasterization.h", "src/triangle_rasterization.cpp" }
       files { "src/depth_buffer.h", "src/depth_buffer.cpp" }
       files { "src/depth_buffer_main.cpp" }
-]]--
+
+project "06. Depth buffer with coloring"
+   kind "ConsoleApp"
+      includedirs { "src/" }
+      includedirs { "lib/stb" }
+      includedirs { "lib/tinyobjloader" }
+      includedirs { "lib/linalg" }
+      files { "lib/stb/stb_image_write.h" }
+      files { "src/clear_rendertarget.h", "src/clear_rendertarget.cpp" }
+      files { "src/draw_line.h", "src/draw_line.cpp" }
+      files { "src/projections.h", "src/projections.cpp" }
+      files { "src/triangle_rasterization.h", "src/triangle_rasterization.cpp" }
+      files { "src/depth_buffer_color.h", "src/depth_buffer_color.cpp" }
+      files { "src/depth_buffer_color_main.cpp" }

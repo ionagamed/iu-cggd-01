@@ -1,22 +1,25 @@
-#include "clear_rendertarget.h"
-
+#include <chrono>
 #include <iostream>
 
-int main(int argc, char* argv[])
-{
-    try
-    {
-        cg::ClearRenderTarget* render = new cg::ClearRenderTarget(1920, 1080);
+#include "clear_rendertarget.h"
 
-        render->Clear();
+int main(int argc, char* argv[]) {
+  try {
+    // std::chrono::high_resolution_clock perf_clock;
+    cg::ClearRenderTarget* render = new cg::ClearRenderTarget(1920, 1080);
 
-        render->Save("results/clear_rendertarget.png");
+    // auto time_before = perf_clock.now();
+    render->Clear();
+    // auto time_after = perf_clock.now();
 
-        // Just show the resulted image
-        system("start results/clear_rendertarget.png");
-    }
-    catch (std::exception & e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
+    // std::cout << "render->Clear() took "
+              // << std::chrono::duration_cast<std::chrono::milliseconds>(
+                    //  time_after - time_before)
+                    //  .count()
+              // << "ms" << std::endl;
+
+    render->Save("results/clear_rendertarget.png");
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
 }

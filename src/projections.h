@@ -1,50 +1,64 @@
 #pragma once
 
+#include <linalg.h>
 
 #include "draw_line.h"
-
-#include <linalg.h>
 using namespace linalg::aliases;
+using namespace linalg::ostream_overloads;
 
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 
+namespace cg {
 
-namespace cg
-{
+struct face {
+  float4 vertices[3];
+  unsigned primitive_id;
+};
 
-	struct face
-	{
-		float4 vertexes[3];
-	};
+class ObjParser {
+ public:
+  ObjParser(std::string filename);
+  virtual ~ObjParser();
 
-	class ObjParser
-	{
-	public:
-		ObjParser(std::string filename);
-		virtual ~ObjParser();
+  void Parse();
 
-		void Parse();
+  const std::vector<face> &GetFaces();
 
-		const std::vector<face>& GetFaces();
+ protected:
+  std::filesystem::path filename;
+  std::vector<face> faces;
+};
 
-	protected:
-		std::filesystem::path filename;
-		std::vector<face> faces;
+struct ConstantBuffer {
+  float4x4 world;
+  float4x4 view;
+  float4x4 projection;
+};
 
-	};
+class Projections : public LineDrawing {
+ public:
+  Projections(unsigned short width, unsigned short height,
+              std::string obj_file);
+  virtual ~Projections();
 
-	class Projections : public LineDrawing
-	{
-	public:
-		Projections(unsigned short width, unsigned short height, std::string obj_file);
-		virtual ~Projections();
+  virtual void DrawScene();
+  void LookAt(float3 eye, float3 looking_at, float3 up);
 
-		void DrawScene();
+ protected:
+  ObjParser *parser;
+  ConstantBuffer cb;
 
-	protected:
-		ObjParser* parser;
+  face ApplyVertexShader(face face);
+  float4 ApplyVertexShader(float4 vertex);
+  void Rasterizer(face face);
 
-	};
+  void InitConstantBuffer();
+  void InitProjectionMatrix();
 
-}
+  void SetWorldMatrix(float4x4 mat);
+
+  virtual void DrawTriangle(face face);
+};
+
+}  // namespace cg
